@@ -52,7 +52,7 @@ janela.resizable(False, False)
 
 janela.iconbitmap("imagens/login.ico")
 # ==== ELEMENTOS ====  
-label_titulo = ctk.CTkLabel(janela, text="Login no Sistema", font=("Arial", 20, "bold"))
+label_titulo = ctk.CTkLabel(janela, text="Loja Dessendre", font=("Arial", 20, "bold"))
 label_titulo.pack(pady=20)
 
 # ---- Frame Usuário ----
