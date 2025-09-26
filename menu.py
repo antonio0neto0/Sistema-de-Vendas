@@ -1,68 +1,77 @@
 import customtkinter as ctk
 from PIL import Image
 import sys
+import estoque  # importa diretamente o módulo estoque
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
-def abrir_menu(janela_login):
-    # Oculta a janela de login
-    janela_login.withdraw()
+def abrir_menu(janela_login=None):
+    if janela_login:
+        janela_login.destroy()  # fecha a janela de login
 
-    menu = ctk.CTkToplevel(janela_login)
+    menu = ctk.CTk()
     menu.title("Sistema de Vendas - Menu Principal")
     menu.geometry("600x400")
 
-    # ===== Funções dos botões =====
-    def abrir_vendas():
-        print("Abrindo módulo de vendas...")
-
-    def abrir_estoque():
-        print("Abrindo controle de estoque...")
-
-    def abrir_clientes():
-        print("Abrindo cadastro de clientes...")
-
-    def sair_menu():
-        menu.destroy()
-        janela_login.destroy()
-        sys.exit()
-
-    # ===== FRAME TÍTULO =====
+    # === Frame Título ===
     frame_titulo = ctk.CTkFrame(menu)
     frame_titulo.pack(fill="x", pady=(20,10), padx=20)
-    label = ctk.CTkLabel(frame_titulo, text="Bem-vindo ao Sistema de Vendas!", font=("Arial", 18, "bold"))
+    label = ctk.CTkLabel(frame_titulo, text="Bem-vindo ao Sistema de Vendas!", font=("Arial",18,"bold"))
     label.pack(pady=10)
 
-    # ===== FRAME BOTÕES =====
+    # === Frame Botões ===
     frame_botoes = ctk.CTkFrame(menu, fg_color=None)
     frame_botoes.pack(pady=10, padx=40, fill="both")
 
-    # ===== CARREGAR ÍCONES =====
-    try:
-        icone_vendas = ctk.CTkImage(light_image=Image.open("imagens/vendas.png"), size=(20, 20))
-        icone_estoque = ctk.CTkImage(light_image=Image.open("imagens/estoque.png"), size=(20, 20))
-        icone_clientes = ctk.CTkImage(light_image=Image.open("imagens/clientes.png"), size=(20, 20))
-        icone_sair = ctk.CTkImage(light_image=Image.open("imagens/sair.png"), size=(20, 20))
-    except Exception as e:
-        print("Erro ao carregar ícones:", e)
-        icone_vendas = icone_estoque = icone_clientes = icone_sair = None
+    # === Ícones ===
+    icone_vendas = ctk.CTkImage(light_image=Image.open("imagens/vendas.png"), size=(20,20))
+    icone_estoque = ctk.CTkImage(light_image=Image.open("imagens/estoque.png"), size=(20,20))
+    icone_clientes = ctk.CTkImage(light_image=Image.open("imagens/clientes.png"), size=(20,20))
+    icone_sair = ctk.CTkImage(light_image=Image.open("imagens/sair.png"), size=(20,20))
 
-    botao_largura = 180
-    botao_altura = 35
+    largura = 180
+    altura = 35
 
+    # === Funções dos Botões ===
+    def abrir_vendas():
+        # você pode adaptar para abrir o módulo vendas sem subprocess
+        menu.iconify()  # esconde o menu temporariamente
+        # aqui você chamaria a função de abrir vendas
+        # depois de fechar, chamar menu.deiconify() se quiser voltar
+
+    def abrir_estoque():
+        menu.iconify()  # esconde o menu
+        estoque.abrir_estoque(menu)  # passa o menu como referência
+
+    def abrir_clientes():
+        menu.iconify()  # esconde o menu
+        # aqui você chamaria a função de clientes
+        # depois de fechar, chamar menu.deiconify() se quiser voltar
+
+    def sair():
+        menu.destroy()
+        sys.exit()
+
+    # === Botões ===
     btn_vendas = ctk.CTkButton(frame_botoes, text="Nova Venda", image=icone_vendas,
-                               command=abrir_vendas, compound="left", width=botao_largura, height=botao_altura)
+                               command=abrir_vendas, compound="left",
+                               width=largura, height=altura)
     btn_vendas.pack(pady=8, anchor="center")
 
     btn_estoque = ctk.CTkButton(frame_botoes, text="Controle de Estoque", image=icone_estoque,
-                                command=abrir_estoque, compound="left", width=botao_largura, height=botao_altura)
+                                command=abrir_estoque, compound="left",
+                                width=largura, height=altura)
     btn_estoque.pack(pady=8, anchor="center")
 
     btn_clientes = ctk.CTkButton(frame_botoes, text="Cadastro de Clientes", image=icone_clientes,
-                                 command=abrir_clientes, compound="left", width=botao_largura, height=botao_altura)
+                                 command=abrir_clientes, compound="left",
+                                 width=largura, height=altura)
     btn_clientes.pack(pady=8, anchor="center")
 
-    btn_sair = ctk.CTkButton(frame_botoes, text="Sair", image=icone_sair, fg_color="red",
-                             command=sair_menu, compound="left", width=botao_largura, height=botao_altura)
+    btn_sair = ctk.CTkButton(frame_botoes, text="Sair", image=icone_sair,
+                             fg_color="red", command=sair, compound="left",
+                             width=largura, height=altura)
     btn_sair.pack(pady=12, anchor="center")
+
+    menu.mainloop()
