@@ -1,18 +1,27 @@
 import customtkinter as ctk
 from PIL import Image
 import sys
-import estoque  # importa diretamente o módulo estoque
+import estoque
+from login import abrir_login
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
-def abrir_menu(janela_login=None):
-    if janela_login:
-        janela_login.destroy()  # fecha a janela de login
-
+def iniciar_sistema():
+    # === Menu principal ===
     menu = ctk.CTk()
     menu.title("Sistema de Vendas - Menu Principal")
     menu.geometry("600x400")
+
+    # Menu escondido até login
+    menu.withdraw()
+
+    # === Callback após login ===
+    def mostrar_menu():
+        menu.deiconify()
+
+    # Abre o login modal
+    abrir_login(menu, callback_login_sucesso=mostrar_menu)
 
     # === Frame Título ===
     frame_titulo = ctk.CTkFrame(menu)
@@ -25,29 +34,31 @@ def abrir_menu(janela_login=None):
     frame_botoes.pack(pady=10, padx=40, fill="both")
 
     # === Ícones ===
-    icone_vendas = ctk.CTkImage(light_image=Image.open("imagens/vendas.png"), size=(20,20))
-    icone_estoque = ctk.CTkImage(light_image=Image.open("imagens/estoque.png"), size=(20,20))
-    icone_clientes = ctk.CTkImage(light_image=Image.open("imagens/clientes.png"), size=(20,20))
-    icone_sair = ctk.CTkImage(light_image=Image.open("imagens/sair.png"), size=(20,20))
+    try:
+        icone_vendas = ctk.CTkImage(light_image=Image.open("imagens/vendas.png"), size=(20,20))
+        icone_estoque = ctk.CTkImage(light_image=Image.open("imagens/estoque.png"), size=(20,20))
+        icone_clientes = ctk.CTkImage(light_image=Image.open("imagens/clientes.png"), size=(20,20))
+        icone_sair = ctk.CTkImage(light_image=Image.open("imagens/sair.png"), size=(20,20))
+    except:
+        icone_vendas = icone_estoque = icone_clientes = icone_sair = None
 
     largura = 180
     altura = 35
 
     # === Funções dos Botões ===
     def abrir_vendas():
-        # você pode adaptar para abrir o módulo vendas sem subprocess
-        menu.iconify()  # esconde o menu temporariamente
-        # aqui você chamaria a função de abrir vendas
-        # depois de fechar, chamar menu.deiconify() se quiser voltar
+        menu.iconify()
+        # Aqui você poderia abrir o módulo de vendas
+        menu.deiconify()
 
-    def abrir_estoque():
-        menu.iconify()  # esconde o menu
-        estoque.abrir_estoque(menu)  # passa o menu como referência
+    def abrir_estoque_callback():
+        menu.iconify()
+        estoque.abrir_estoque(menu, callback=lambda: menu.deiconify())
 
     def abrir_clientes():
-        menu.iconify()  # esconde o menu
-        # aqui você chamaria a função de clientes
-        # depois de fechar, chamar menu.deiconify() se quiser voltar
+        menu.iconify()
+        # Aqui você poderia abrir módulo de clientes
+        menu.deiconify()
 
     def sair():
         menu.destroy()
@@ -60,7 +71,7 @@ def abrir_menu(janela_login=None):
     btn_vendas.pack(pady=8, anchor="center")
 
     btn_estoque = ctk.CTkButton(frame_botoes, text="Controle de Estoque", image=icone_estoque,
-                                command=abrir_estoque, compound="left",
+                                command=abrir_estoque_callback, compound="left",
                                 width=largura, height=altura)
     btn_estoque.pack(pady=8, anchor="center")
 
@@ -74,4 +85,5 @@ def abrir_menu(janela_login=None):
                              width=largura, height=altura)
     btn_sair.pack(pady=12, anchor="center")
 
+    # === Mainloop apenas no menu ===
     menu.mainloop()
