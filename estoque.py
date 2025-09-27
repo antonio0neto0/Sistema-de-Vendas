@@ -1,5 +1,4 @@
 import customtkinter as ctk
-import tkinter as tk
 from tkinter import ttk, messagebox
 
 ctk.set_appearance_mode("dark")
@@ -10,13 +9,17 @@ def centralizar(jan, largura, altura):
     y = (jan.winfo_screenheight() // 2) - (altura // 2)
     jan.geometry(f"{largura}x{altura}+{x}+{y}")
 
-def abrir_estoque(menu):
-    janela = ctk.CTk()
+def abrir_estoque(menu, callback=None):
+    """
+    menu: janela principal (menu)
+    callback: função opcional a chamar ao fechar o estoque
+    """
+    janela = ctk.CTkToplevel(menu)
     janela.title("Sistema de Vendas - Controle de Estoque")
     janela.resizable(True, True)
     centralizar(janela, 800, 500)
 
-    # === Funções ===
+    # === Funções internas ===
     def atualizar_ids():
         for i, item in enumerate(tabela.get_children(), start=1):
             tabela.item(item, values=(i, *tabela.item(item)["values"][1:]))
@@ -53,11 +56,10 @@ def abrir_estoque(menu):
             if erros:
                 label_msg.configure(text="\n".join(erros))
                 return
-            tabela.insert("", tk.END, values=(len(tabela.get_children())+1, nome, quant, preco))
+            tabela.insert("", "end", values=(len(tabela.get_children())+1, nome, quant, preco))
             popup.destroy()
 
         btn_salvar = ctk.CTkButton(popup, text="Salvar", command=salvar); btn_salvar.pack(pady=10)
-        # Bind Enter
         entry_nome.bind("<Return>", lambda e: salvar())
         entry_quant.bind("<Return>", lambda e: salvar())
         entry_preco.bind("<Return>", lambda e: salvar())
@@ -109,7 +111,9 @@ def abrir_estoque(menu):
 
     def voltar():
         janela.destroy()
-        menu.deiconify()  # mostra o menu novamente
+        menu.deiconify()  # mostra o menu
+        if callback:
+            callback()
 
     # === Frame Título ===
     frame_titulo = ctk.CTkFrame(janela); frame_titulo.pack(fill="x", pady=(20,10), padx=20)
@@ -138,6 +142,4 @@ def abrir_estoque(menu):
 
     # === Dados Exemplo ===
     for item in [(1,"Camisa Polo",15,59.90),(2,"Calça Jeans",10,120.00),(3,"Tênis Esportivo",8,250.00)]:
-        tabela.insert("",tk.END,values=item)
-
-    janela.mainloop()
+        tabela.insert("", "end", values=item)
