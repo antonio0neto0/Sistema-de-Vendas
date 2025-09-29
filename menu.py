@@ -55,10 +55,12 @@ def iniciar_sistema():
         menu.iconify()
         estoque.abrir_estoque(menu, callback=lambda: menu.deiconify())
 
+    import clientes
+
     def abrir_clientes():
         menu.iconify()
-        # Aqui você poderia abrir módulo de clientes
-        menu.deiconify()
+        clientes.abrir_clientes(menu, callback=lambda: menu.deiconify())
+
 
     def sair():
         menu.destroy()
