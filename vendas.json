@@ -1,0 +1,209 @@
+[
+    {
+        "itens": [
+            {
+                "id_produto": "temp_1759270279.019244",
+                "nome_produto": "banana",
+                "quantidade": 2,
+                "preco_unitario": "R$ 3.00"
+            }
+        ],
+        "total": "6.00",
+        "data": "30/09/2025 19:11:29"
+    },
+    {
+        "itens": [
+            {
+                "id_produto": 1,
+                "nome_produto": "Camisa Polo",
+                "quantidade": 1,
+                "preco_unitario": "R$ 59.90"
+            }
+        ],
+        "total": "59.90",
+        "data": "30/09/2025 19:11:54"
+    },
+    {
+        "itens": [
+            {
+                "id_produto": 2,
+                "nome_produto": "Tênis Esportivo",
+                "quantidade": 1,
+                "preco_unitario": "R$ 249.90"
+            },
+            {
+                "id_produto": 3,
+                "nome_produto": "banana",
+                "quantidade": 1,
+                "preco_unitario": "R$ 8.00"
+            }
+        ],
+        "total": "257.90",
+        "data": "30/09/2025 19:15:23"
+    },
+    {
+        "itens": [
+            {
+                "id_produto": 1,
+                "nome_produto": "Camisa Polo",
+                "quantidade": 1,
+                "preco_unitario": "R$ 59.90"
+            },
+            {
+                "id_produto": 2,
+                "nome_produto": "Tênis Esportivo",
+                "quantidade": 1,
+                "preco_unitario": "R$ 249.90"
+            }
+        ],
+        "total_bruto": "309.80",
+        "desconto": "30.98",
+        "total_final": "278.82",
+        "data": "30/09/2025 19:22:03"
+    },
+    {
+        "itens": [],
+        "total_bruto": "67.90",
+        "desconto": "0.00",
+        "total_final": "67.90",
+        "forma_pagamento": "Pix",
+        "valor_recebido": "",
+        "troco": "0.00",
+        "data": "30/09/2025 19:26:59"
+    },
+    {
+        "itens": [],
+        "total_bruto": "567.90",
+        "desconto": "0.00",
+        "total_final": "567.90",
+        "forma_pagamento": "Dinheiro",
+        "valor_recebido": "",
+        "troco": "0.00",
+        "data": "30/09/2025 19:27:33"
+    },
+    {
+        "itens": [],
+        "total_bruto": "59.90",
+        "desconto": "0.00",
+        "total_final": "59.90",
+        "forma_pagamento": "Dinheiro",
+        "valor_recebido": "60",
+        "troco": "0.10",
+        "data": "30/09/2025 19:28:07"
+    },
+    {
+        "itens": [],
+        "total_bruto": "8.00",
+        "desconto": "0.00",
+        "total_final": "8.00",
+        "forma_pagamento": "Dinheiro",
+        "valor_recebido": "8",
+        "troco": "0.00",
+        "data": "30/09/2025 19:30:15"
+    },
+    {
+        "itens": [],
+        "total_bruto": "59.90",
+        "desconto": "0.00",
+        "total_final": "59.90",
+        "forma_pagamento": "Cartão de Crédito",
+        "valor_recebido": "N/A",
+        "troco": "0.00",
+        "data": "30/09/2025 19:32:29"
+    },
+    {
+        "itens": [],
+        "total_bruto": "8.00",
+        "desconto": "0.00",
+        "total_final": "8.00",
+        "forma_pagamento": "Dinheiro",
+        "valor_recebido": "8.50",
+        "troco": "0.50",
+        "data": "30/09/2025 19:38:35"
+    },
+    {
+        "itens": [],
+        "total_bruto": "324.00",
+        "desconto": "0.00",
+        "total_final": "324.00",
+        "forma_pagamento": "Pix",
+        "valor_recebido": "888",
+        "troco": "564.00",
+        "data": "30/09/2025 19:50:55"
+    },
+    {
+        "itens": [],
+        "total_bruto": "8.00",
+        "desconto": "0.00",
+        "total_final": "8.00",
+        "forma_pagamento": "Dinheiro",
+        "valor_recebido": "50",
+        "troco": "42.00",
+        "data": "30/09/2025 19:57:47"
+    },
+    {
+        "itens": [],
+        "total_bruto": "616.00",
+        "desconto": "38.00",
+        "total_final": "578.00",
+        "forma_pagamento": "Cartão de Crédito",
+        "valor_recebido": "N/A",
+        "troco": "0.00",
+        "data": "30/09/2025 20:03:50"
+    },
+    {
+        "itens": [],
+        "total_bruto": "758.00",
+        "desconto": "0.00",
+        "total_final": "758.00",
+        "forma_pagamento": "Cartão de Débito",
+        "valor_recebido": "758,00",
+        "troco": "0.00",
+        "data": "30/09/2025 20:07:10"
+    },
+    {
+        "itens": [],
+        "total_bruto": "437.70",
+        "desconto": "20.00",
+        "total_final": "417.70",
+        "forma_pagamento": "Cartão de Crédito",
+        "valor_recebido": "417,70",
+        "troco": "0.00",
+        "data": "30/09/2025 20:29:34"
+    },
+    {
+        "itens": [],
+        "total_bruto": "179.70",
+        "desconto": "0.00",
+        "total_final": "179.70",
+        "forma_pagamento": "Dinheiro",
+        "valor_recebido": "180",
+        "troco": "0.30",
+        "data": "30/09/2025 20:29:51"
+    },
+    {
+        "itens": [
+            {
+                "id_produto": 2,
+                "nome_produto": "Tênis Esportivo",
+                "quantidade": 3,
+                "preco_unitario": "R$ 250.00",
+                "subtotal": "R$ 750.00"
+            },
+            {
+                "id_produto": 3,
+                "nome_produto": "banana",
+                "quantidade": 1,
+                "preco_unitario": "R$ 8.00",
+                "subtotal": "R$ 8.00"
+            }
+        ],
+        "total_bruto": "758.00",
+        "desconto": "0.00",
+        "total_final": "758.00",
+        "forma_pagamento": "Cartão de Crédito",
+        "valor_recebido": "758,00",
+        "troco": "0.00",
+        "data": "30/09/2025 20:32:29"
+    }
+]
