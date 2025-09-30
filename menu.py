@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from PIL import Image
 import sys
+import vendas
 import estoque
 from login import abrir_login
 
@@ -48,8 +49,7 @@ def iniciar_sistema():
     # === Funções dos Botões ===
     def abrir_vendas():
         menu.iconify()
-        # Aqui você poderia abrir o módulo de vendas
-        menu.deiconify()
+        vendas.abrir_vendas(menu, callback=lambda: menu.deiconify())
 
     def abrir_estoque_callback():
         menu.iconify()
