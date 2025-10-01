@@ -4,6 +4,8 @@ import sys
 import vendas
 import estoque
 from login import abrir_login
+import clientes
+import historico_vendas   # <--- importa o histórico
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
@@ -12,7 +14,7 @@ def iniciar_sistema():
     # === Menu principal ===
     menu = ctk.CTk()
     menu.title("Sistema de Vendas - Menu Principal")
-    menu.geometry("600x400")
+    menu.geometry("600x450")  # aumentei um pouco a altura
 
     # Menu escondido até login
     menu.withdraw()
@@ -39,11 +41,12 @@ def iniciar_sistema():
         icone_vendas = ctk.CTkImage(light_image=Image.open("imagens/vendas.png"), size=(20,20))
         icone_estoque = ctk.CTkImage(light_image=Image.open("imagens/estoque.png"), size=(20,20))
         icone_clientes = ctk.CTkImage(light_image=Image.open("imagens/clientes.png"), size=(20,20))
+        icone_historico = ctk.CTkImage(light_image=Image.open("imagens/historico.png"), size=(20,20))
         icone_sair = ctk.CTkImage(light_image=Image.open("imagens/sair.png"), size=(20,20))
     except:
-        icone_vendas = icone_estoque = icone_clientes = icone_sair = None
+        icone_vendas = icone_estoque = icone_clientes = icone_historico = icone_sair = None
 
-    largura = 180
+    largura = 200
     altura = 35
 
     # === Funções dos Botões ===
@@ -55,12 +58,13 @@ def iniciar_sistema():
         menu.iconify()
         estoque.abrir_estoque(menu, callback=lambda: menu.deiconify())
 
-    import clientes
-
     def abrir_clientes():
         menu.iconify()
         clientes.abrir_clientes(menu, callback=lambda: menu.deiconify())
 
+    def abrir_historico():
+        menu.iconify()
+        historico_vendas.abrir_historico_vendas(menu, callback=lambda: menu.deiconify())
 
     def sair():
         menu.destroy()
@@ -81,6 +85,11 @@ def iniciar_sistema():
                                  command=abrir_clientes, compound="left",
                                  width=largura, height=altura)
     btn_clientes.pack(pady=8, anchor="center")
+
+    btn_historico = ctk.CTkButton(frame_botoes, text="Histórico de Vendas", image=icone_historico,
+                                  command=abrir_historico, compound="left",
+                                  width=largura, height=altura)
+    btn_historico.pack(pady=8, anchor="center")
 
     btn_sair = ctk.CTkButton(frame_botoes, text="Sair", image=icone_sair,
                              fg_color="red", command=sair, compound="left",
