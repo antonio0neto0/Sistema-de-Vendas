@@ -18,7 +18,7 @@ def carregar_clientes():
         try:
             with open(ARQUIVO_CLIENTES, "r", encoding="utf-8") as f:
                 return json.load(f)
-        except:
+        except (json.JSONDecodeError, FileNotFoundError):
             return []
     return []
 
@@ -30,11 +30,11 @@ def salvar_clientes(lista):
 def gerar_id_unico():
     dados = carregar_clientes()
     if dados:
-        max_id = max(cliente["id"] for cliente in dados)
+        max_id = max(cliente.get("id", 0) for cliente in dados)
         return max_id + 1
     return 1
 
-# 🔹 Função para formatar telefone
+# 🔹 Funções de formatação e validação
 def formatar_telefone(telefone):
     numeros = re.sub(r"\D", "", telefone)
     if len(numeros) == 10:  # (XX) XXXX-XXXX
@@ -44,7 +44,6 @@ def formatar_telefone(telefone):
     else:
         return telefone
 
-# 🔹 Função para validar telefone (borda vermelha se inválido)
 def validar_telefone(entry):
     numeros = re.sub(r"\D", "", entry.get())
     if len(numeros) not in (10, 11):
@@ -54,11 +53,47 @@ def validar_telefone(entry):
         entry.configure(border_color="gray")
         return True
 
+def formatar_e_validar_cpf(entry):
+    numeros = re.sub(r"\D", "", entry.get())
+    
+    if len(numeros) > 11:
+        numeros = numeros[:11]
+    
+    if len(numeros) > 9:
+        formatado = f"{numeros[:3]}.{numeros[3:6]}.{numeros[6:9]}-{numeros[9:]}"
+    elif len(numeros) > 6:
+        formatado = f"{numeros[:3]}.{numeros[3:6]}.{numeros[6:]}"
+    elif len(numeros) > 3:
+        formatado = f"{numeros[:3]}.{numeros[3:]}"
+    else:
+        formatado = numeros
+    
+    pos_antiga = entry.index(ctk.INSERT)
+    entry.delete(0, ctk.END)
+    entry.insert(0, formatado)
+    
+    nova_pos = pos_antiga
+    if len(numeros) > 3 and pos_antiga in (4, 5):
+        nova_pos += 1
+    if len(numeros) > 6 and pos_antiga in (8, 9):
+        nova_pos += 1
+    if len(numeros) > 9 and pos_antiga in (12, 13):
+        nova_pos += 1
+    
+    entry.icursor(nova_pos)
+
+    if len(numeros) == 11:
+        entry.configure(border_color="gray")
+        return True
+    else:
+        entry.configure(border_color="red")
+        return False
+
 def abrir_clientes(menu, callback=None):
     janela = ctk.CTkToplevel(menu)
     janela.title("Sistema de Vendas - Cadastro de Clientes")
     janela.resizable(True, True)
-    centralizar(janela, 800, 500)
+    centralizar(janela, 950, 500)
 
     # === Funções internas ===
     def mostrar_mensagem(texto, cor="red"):
@@ -69,11 +104,14 @@ def abrir_clientes(menu, callback=None):
         clientes_lista = []
         for item in tabela.get_children():
             valores = tabela.item(item)["values"]
+            cpf_sem_formatacao = re.sub(r"\D", "", valores[2])
+            
             clientes_lista.append({
                 "id": valores[0],
                 "nome": valores[1],
-                "telefone": valores[2],
-                "email": valores[3]
+                "cpf": cpf_sem_formatacao,
+                "telefone": valores[3],
+                "email": valores[4]
             })
         salvar_clientes(clientes_lista)
 
@@ -82,13 +120,15 @@ def abrir_clientes(menu, callback=None):
         popup = ctk.CTkToplevel(janela)
         popup.title(titulo)
         popup.resizable(False, False)
-        centralizar(popup, 350, 300)
+        centralizar(popup, 350, 400)
 
         label_msg = ctk.CTkLabel(popup, text="", text_color="red", font=("Arial",10))
         label_msg.pack(pady=5)
 
         ctk.CTkLabel(popup, text="Nome:").pack(pady=(5,0))
         entry_nome = ctk.CTkEntry(popup); entry_nome.pack(pady=2, fill="x", padx=20)
+        ctk.CTkLabel(popup, text="CPF:").pack(pady=(5,0))
+        entry_cpf = ctk.CTkEntry(popup); entry_cpf.pack(pady=2, fill="x", padx=20)
         ctk.CTkLabel(popup, text="Telefone:").pack(pady=(5,0))
         entry_tel = ctk.CTkEntry(popup); entry_tel.pack(pady=2, fill="x", padx=20)
         ctk.CTkLabel(popup, text="E-mail:").pack(pady=(5,0))
@@ -97,35 +137,61 @@ def abrir_clientes(menu, callback=None):
         # Preencher campos se for edição
         if valores:
             entry_nome.insert(0, valores[1])
-            entry_tel.insert(0, valores[2])
-            entry_email.insert(0, valores[3])
+            entry_cpf.insert(0, valores[2])
+            entry_tel.insert(0, valores[3])
+            entry_email.insert(0, valores[4])
 
-        # Validação de telefone em tempo real
+        # Validação de campos em tempo real
+        entry_cpf.bind("<KeyRelease>", lambda e: formatar_e_validar_cpf(entry_cpf))
         entry_tel.bind("<KeyRelease>", lambda e: validar_telefone(entry_tel))
 
         def salvar():
             erros = []
             nome = entry_nome.get().strip()
+            cpf_digitado = re.sub(r"\D", "", entry_cpf.get().strip())
             tel = entry_tel.get().strip()
             email = entry_email.get().strip()
+            
+            # --- VERIFICAÇÃO DE CPF DUPLICADO ---
+            dados_existentes = carregar_clientes()
+            
+            if dados_existentes:
+                for cliente in dados_existentes:
+                    cpf_existente = cliente.get("cpf", "")
+                    
+                    # Se for uma edição, ignora a si mesmo na verificação
+                    if valores and cliente["id"] == valores[0]:
+                        continue
+                        
+                    if cpf_existente == cpf_digitado:
+                        erros.append("Este CPF já está cadastrado.")
+                        break
+
             if not nome: erros.append("Nome: obrigatório")
+            if not cpf_digitado or len(cpf_digitado) != 11: erros.append("CPF inválido (11 dígitos)")
             if not tel: erros.append("Telefone: obrigatório")
-            elif not validar_telefone(entry_tel): erros.append("Telefone inválido")
+            elif len(re.sub(r"\D", "", tel)) not in (10, 11): erros.append("Telefone inválido")
             if not email: erros.append("E-mail: obrigatório")
+            
             if erros:
                 label_msg.configure(text="\n".join(erros))
                 return
+            
             tel_formatado = formatar_telefone(tel)
-            if valores:  # edição
-                tabela.item(item_id, values=(valores[0], nome, tel_formatado, email))
-            else:  # novo cliente
+            cpf_formatado = f"{cpf_digitado[:3]}.{cpf_digitado[3:6]}.{cpf_digitado[6:9]}-{cpf_digitado[9:11]}"
+            
+            if valores:  # Edição
+                tabela.item(item_id, values=(valores[0], nome, cpf_formatado, tel_formatado, email))
+            else:  # Novo cliente
                 novo_id = gerar_id_unico()
-                tabela.insert("", "end", values=(novo_id, nome, tel_formatado, email))
+                tabela.insert("", "end", values=(novo_id, nome, cpf_formatado, tel_formatado, email))
+            
             salvar_para_arquivo()
             popup.destroy()
 
         ctk.CTkButton(popup, text="Salvar", command=salvar).pack(pady=10)
         entry_nome.bind("<Return>", lambda e: salvar())
+        entry_cpf.bind("<Return>", lambda e: salvar())
         entry_tel.bind("<Return>", lambda e: salvar())
         entry_email.bind("<Return>", lambda e: salvar())
 
@@ -166,11 +232,12 @@ def abrir_clientes(menu, callback=None):
 
     # === Tabela ===
     frame_tabela=ctk.CTkFrame(janela, fg_color=None); frame_tabela.pack(fill="both", expand=True, padx=20, pady=10)
-    colunas=("id","nome","telefone","email")
+    colunas=("id","nome","cpf","telefone","email")
     tabela=ttk.Treeview(frame_tabela, columns=colunas, show="headings")
     for c in colunas: tabela.heading(c,text=c.capitalize())
     tabela.column("id",width=50,anchor="center")
-    tabela.column("nome",width=200,anchor="w")
+    tabela.column("nome",width=180,anchor="w")
+    tabela.column("cpf",width=130,anchor="center")
     tabela.column("telefone",width=150,anchor="center")
     tabela.column("email",width=250,anchor="w")
     scrollbar=ttk.Scrollbar(frame_tabela, orient="vertical", command=tabela.yview)
@@ -192,10 +259,13 @@ def abrir_clientes(menu, callback=None):
     dados = carregar_clientes()
     if dados:
         for item in dados:
-            tabela.insert("", "end", values=(item["id"], item["nome"], item["telefone"], item["email"]))
+            cpf_exibicao = f"{item['cpf'][:3]}.{item['cpf'][3:6]}.{item['cpf'][6:9]}-{item['cpf'][9:11]}"
+            tabela.insert("", "end", values=(item["id"], item["nome"], cpf_exibicao, item["telefone"], item["email"]))
     else:
-        exemplos = [(1,"João Silva","(11) 99999-1111","joao@email.com"),
-                    (2,"Maria Souza","(21) 98888-2222","maria@email.com")]
+        exemplos = [(1,"João Silva","11111111111","(11) 99999-1111","joao@email.com"),
+                    (2,"Maria Souza","22222222222","(21) 98888-2222","maria@email.com")]
         for item in exemplos:
-            tabela.insert("", "end", values=item)
+            # Ao inserir os exemplos, garanta que o CPF seja formatado para exibição
+            cpf_exibicao = f"{item[2][:3]}.{item[2][3:6]}.{item[2][6:9]}-{item[2][9:11]}"
+            tabela.insert("", "end", values=(item[0], item[1], cpf_exibicao, item[3], item[4]))
         salvar_para_arquivo()
