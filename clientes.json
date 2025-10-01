@@ -2,25 +2,43 @@
     {
         "id": 1,
         "nome": "João Silva",
+        "cpf": "48611408896",
         "telefone": "(11) 99999-1111",
         "email": "joao@email.com"
     },
     {
         "id": 2,
         "nome": "Maria Souza",
+        "cpf": "00000000000",
         "telefone": "(21) 98888-2222",
         "email": "maria@email.com"
     },
     {
         "id": 4,
         "nome": "neto",
+        "cpf": "11111111111",
         "telefone": "(13) 99134-6707",
         "email": "dsvsvs@sfvsf.com"
     },
     {
         "id": 5,
         "nome": "svsevsv",
+        "cpf": "22222222222",
         "telefone": "(00) 00000-0000",
         "email": "sdbsdrs"
+    },
+    {
+        "id": 6,
+        "nome": "neto",
+        "cpf": "55555555555",
+        "telefone": "(13) 99134-6707",
+        "email": "zxdvdxvxv"
+    },
+    {
+        "id": 7,
+        "nome": "amanda",
+        "cpf": "48611408897",
+        "telefone": "(99) 99999-9999",
+        "email": "zdvzscscszczscsc"
     }
 ]

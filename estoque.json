@@ -2,25 +2,25 @@
     {
         "id": 1,
         "nome": "Camisa Polo",
-        "quantidade": 14,
+        "quantidade": 12,
         "preco": "R$ 59.90"
     },
     {
         "id": 2,
         "nome": "Tênis Esportivo",
-        "quantidade": 16,
+        "quantidade": 13,
         "preco": "R$ 250.00"
     },
     {
         "id": 3,
         "nome": "banana",
-        "quantidade": 14,
+        "quantidade": 8,
         "preco": "R$ 8.00"
     },
     {
         "id": 4,
         "nome": "teste",
-        "quantidade": 47,
+        "quantidade": 46,
         "preco": "R$ 50.00"
     }
 ]

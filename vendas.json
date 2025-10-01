@@ -205,5 +205,147 @@
         "valor_recebido": "758,00",
         "troco": "0.00",
         "data": "30/09/2025 20:32:29"
+    },
+    {
+        "id_cliente": null,
+        "nome_cliente": "Cliente Não Identificado",
+        "itens": [
+            {
+                "id_produto": 1,
+                "nome_produto": "Camisa Polo",
+                "quantidade": 1,
+                "preco_unitario": "R$ 59.90",
+                "subtotal": "R$ 59.90"
+            },
+            {
+                "id_produto": 2,
+                "nome_produto": "Tênis Esportivo",
+                "quantidade": 1,
+                "preco_unitario": "R$ 250.00",
+                "subtotal": "R$ 250.00"
+            }
+        ],
+        "total_bruto": "309.90",
+        "desconto": "0.00",
+        "total_final": "309.90",
+        "forma_pagamento": "Cartão de Débito",
+        "valor_recebido": "309,90",
+        "troco": "0.00",
+        "data": "01/10/2025 15:37:42"
+    },
+    {
+        "id_cliente": 1,
+        "nome_cliente": "João Silva",
+        "itens": [
+            {
+                "id_produto": 2,
+                "nome_produto": "Tênis Esportivo",
+                "quantidade": 1,
+                "preco_unitario": "R$ 250.00",
+                "subtotal": "R$ 250.00"
+            },
+            {
+                "id_produto": 3,
+                "nome_produto": "banana",
+                "quantidade": 1,
+                "preco_unitario": "R$ 8.00",
+                "subtotal": "R$ 8.00"
+            },
+            {
+                "id_produto": 4,
+                "nome_produto": "teste",
+                "quantidade": 1,
+                "preco_unitario": "R$ 50.00",
+                "subtotal": "R$ 50.00"
+            },
+            {
+                "id_produto": "temp_1759343929.728556",
+                "nome_produto": "sdesevh",
+                "quantidade": 8,
+                "preco_unitario": "R$ 1.00",
+                "subtotal": "R$ 8.00"
+            }
+        ],
+        "total_bruto": "316.00",
+        "desconto": "0.00",
+        "total_final": "316.00",
+        "forma_pagamento": "Dinheiro",
+        "valor_recebido": "316",
+        "troco": "0.00",
+        "data": "01/10/2025 15:39:00"
+    },
+    {
+        "id_cliente": 1,
+        "nome_cliente": "João Silva",
+        "itens": [
+            {
+                "id_produto": 3,
+                "nome_produto": "banana",
+                "quantidade": 3,
+                "preco_unitario": "R$ 8.00",
+                "subtotal": "R$ 24.00"
+            }
+        ],
+        "total_bruto": "24.00",
+        "desconto": "0.00",
+        "total_final": "24.00",
+        "forma_pagamento": "Cartão de Crédito",
+        "valor_recebido": "24,00",
+        "troco": "0.00",
+        "data": "01/10/2025 15:53:25"
+    },
+    {
+        "id_cliente": 1,
+        "nome_cliente": "João Silva",
+        "itens": [
+            {
+                "id_produto": 1,
+                "nome_produto": "Camisa Polo",
+                "quantidade": 1,
+                "preco_unitario": "R$ 59.90",
+                "subtotal": "R$ 59.90"
+            },
+            {
+                "id_produto": 2,
+                "nome_produto": "Tênis Esportivo",
+                "quantidade": 1,
+                "preco_unitario": "R$ 250.00",
+                "subtotal": "R$ 250.00"
+            },
+            {
+                "id_produto": 3,
+                "nome_produto": "banana",
+                "quantidade": 1,
+                "preco_unitario": "R$ 8.00",
+                "subtotal": "R$ 8.00"
+            }
+        ],
+        "total_bruto": "317.90",
+        "desconto": "0.00",
+        "total_final": "317.90",
+        "forma_pagamento": "Pix",
+        "valor_recebido": "317,90",
+        "troco": "0.00",
+        "data": "01/10/2025 15:56:47"
+    },
+    {
+        "id_cliente": 2,
+        "nome_cliente": "Maria Souza",
+        "itens": [
+            {
+                "id_produto": 3,
+                "nome_produto": "banana",
+                "quantidade": 1,
+                "preco_unitario": "R$ 8.00",
+                "subtotal": "R$ 8.00"
+            }
+        ],
+        "total_bruto": "8.00",
+        "desconto": "0.00",
+        "total_final": "8.00",
+        "forma_pagamento": "Cartão de Crédito",
+        "valor_recebido": "8,00",
+        "troco": "0.00",
+        "data": "01/10/2025 15:57:02"
     }
 ]
