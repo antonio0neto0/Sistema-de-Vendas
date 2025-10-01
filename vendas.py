@@ -29,6 +29,35 @@ def salvar_venda(venda):
     with open(ARQUIVO_VENDAS, "w", encoding="utf-8") as f:
         json.dump(vendas, f, indent=4, ensure_ascii=False)
 
+def formatar_e_validar_cpf(entry):
+    numeros = re.sub(r"\D", "", entry.get())
+    
+    if len(numeros) > 11:
+        numeros = numeros[:11]
+    
+    if len(numeros) > 9:
+        formatado = f"{numeros[:3]}.{numeros[3:6]}.{numeros[6:9]}-{numeros[9:]}"
+    elif len(numeros) > 6:
+        formatado = f"{numeros[:3]}.{numeros[3:6]}.{numeros[6:]}"
+    elif len(numeros) > 3:
+        formatado = f"{numeros[:3]}.{numeros[3:]}"
+    else:
+        formatado = numeros
+    
+    pos_antiga = entry.index(ctk.INSERT)
+    entry.delete(0, ctk.END)
+    entry.insert(0, formatado)
+    
+    nova_pos = pos_antiga
+    if len(numeros) > 3 and pos_antiga in (4, 5):
+        nova_pos += 1
+    if len(numeros) > 6 and pos_antiga in (8, 9):
+        nova_pos += 1
+    if len(numeros) > 9 and pos_antiga in (12, 13):
+        nova_pos += 1
+    
+    entry.icursor(nova_pos)
+    
 def abrir_vendas(menu, callback=None):
     janela = ctk.CTkToplevel(menu)
     janela.title("Sistema de Vendas - Nova Venda")
@@ -39,6 +68,9 @@ def abrir_vendas(menu, callback=None):
     total_bruto_var = ctk.StringVar(value="0.00")
     desconto_var = ctk.StringVar(value="0.00")
     total_final_var = ctk.StringVar(value="0.00")
+    
+    cliente_selecionado = {"id": None, "nome": "Cliente Não Identificado"}
+    cliente_label_var = ctk.StringVar(value="Cliente: Não Identificado")
 
     def atualizar_totais():
         total_bruto = 0.0
@@ -130,7 +162,6 @@ def abrir_vendas(menu, callback=None):
         if not carrinho_tabela.get_children():
             messagebox.showwarning("Atenção", "O carrinho de compras está vazio!")
             return
-
         abrir_popup_pagamento()
 
     def abrir_popup_pagamento(forma_pagamento_pre_selecionada=None):
@@ -207,7 +238,6 @@ def abrir_vendas(menu, callback=None):
             if not messagebox.askyesno("Confirmação", "Deseja concluir o pagamento?"):
                 return
             
-            # --- NOVO: POPULA A LISTA DE ITENS ANTES DE SALVAR A VENDA ---
             itens_da_venda = []
             itens_a_dar_baixa = []
 
@@ -225,6 +255,8 @@ def abrir_vendas(menu, callback=None):
                     itens_a_dar_baixa.append({"id": item_vals[0], "quantidade": item_vals[2]})
             
             venda = {
+                "id_cliente": cliente_selecionado["id"],
+                "nome_cliente": cliente_selecionado["nome"],
                 "itens": itens_da_venda,
                 "total_bruto": total_bruto_var.get(),
                 "desconto": desconto_var.get(),
@@ -257,6 +289,11 @@ def abrir_vendas(menu, callback=None):
                     produto["quantidade"],
                     produto["preco"]
                 ))
+            
+            cliente_selecionado["id"] = None
+            cliente_selecionado["nome"] = "Cliente Não Identificado"
+            cliente_label_var.set("Cliente: Não Identificado")
+            entry_cpf_cliente.delete(0, "end")
         
         frame_concluir = ctk.CTkFrame(popup, fg_color="transparent")
         frame_concluir.pack(pady=10)
@@ -356,12 +393,56 @@ def abrir_vendas(menu, callback=None):
             messagebox.showwarning("Atenção", "Produto com o ID informado não foi encontrado.")
             entry_id_busca.delete(0, "end")
     
+    def buscar_cliente_por_cpf():
+        nonlocal cliente_selecionado
+        # Remove a formatação para a busca
+        cpf_sem_formatacao = re.sub(r"\D", "", entry_cpf_cliente.get().strip())
+        
+        if not cpf_sem_formatacao or len(cpf_sem_formatacao) != 11:
+            cliente_selecionado = {"id": None, "nome": "Cliente Não Identificado"}
+            cliente_label_var.set("Cliente: Não Identificado")
+            messagebox.showwarning("Atenção", "Por favor, digite um CPF válido (11 dígitos).")
+            return
+
+        lista_clientes = clientes.carregar_clientes()
+        cliente_encontrado = next((c for c in lista_clientes if c.get("cpf") == cpf_sem_formatacao), None)
+
+        if cliente_encontrado:
+            cliente_selecionado["id"] = cliente_encontrado["id"]
+            cliente_selecionado["nome"] = cliente_encontrado["nome"]
+            cliente_label_var.set(f"Cliente: {cliente_encontrado['nome']}")
+            messagebox.showinfo("Sucesso", f"Cliente {cliente_encontrado['nome']} encontrado e adicionado à venda.")
+        else:
+            cliente_selecionado["id"] = None
+            cliente_selecionado["nome"] = "Cliente Não Identificado"
+            cliente_label_var.set("Cliente: Não Identificado")
+            messagebox.showwarning("Atenção", "Cliente não encontrado com o CPF informado.")
+            
     janela.bind("<F11>", lambda e: finalizar_venda())
 
     frame_principal = ctk.CTkFrame(janela)
     frame_principal.pack(fill="both", expand=True, padx=20, pady=20)
     
-    frame_produtos = ctk.CTkFrame(frame_principal)
+    frame_cliente = ctk.CTkFrame(frame_principal, fg_color="transparent")
+    frame_cliente.pack(fill="x", pady=(0, 10))
+
+    ctk.CTkLabel(frame_cliente, text="Buscar Cliente por CPF:", font=("Arial", 12)).pack(side="left", padx=(0, 5))
+    entry_cpf_cliente = ctk.CTkEntry(frame_cliente, width=150, placeholder_text="CPF do Cliente")
+    entry_cpf_cliente.pack(side="left", padx=(0, 5))
+    
+    entry_cpf_cliente.bind("<KeyRelease>", lambda e: formatar_e_validar_cpf(entry_cpf_cliente))
+    entry_cpf_cliente.bind("<Return>", lambda e: buscar_cliente_por_cpf())
+    
+    btn_buscar_cliente = ctk.CTkButton(frame_cliente, text="Buscar", command=buscar_cliente_por_cpf)
+    btn_buscar_cliente.pack(side="left", padx=(0, 10))
+    
+    label_cliente_identificado = ctk.CTkLabel(frame_cliente, textvariable=cliente_label_var, font=("Arial", 12, "bold"), text_color="cyan")
+    label_cliente_identificado.pack(side="left", fill="x", expand=True)
+
+    frame_conteudo = ctk.CTkFrame(frame_principal, fg_color="transparent")
+    frame_conteudo.pack(fill="both", expand=True)
+    
+    frame_produtos = ctk.CTkFrame(frame_conteudo)
     frame_produtos.pack(side="left", fill="both", expand=True, padx=(0, 10), pady=0)
     
     ctk.CTkLabel(frame_produtos, text="Produtos em Estoque", font=("Arial", 16, "bold")).pack(pady=(0, 10))
@@ -425,7 +506,7 @@ def abrir_vendas(menu, callback=None):
     btn_add_avulso = ctk.CTkButton(frame_botoes_produtos, text="Produto Avulso", command=adicionar_produto_temporario)
     btn_add_avulso.pack(side="left", padx=5)
     
-    frame_carrinho = ctk.CTkFrame(frame_principal)
+    frame_carrinho = ctk.CTkFrame(frame_conteudo)
     frame_carrinho.pack(side="right", fill="both", expand=True, padx=(10, 0), pady=0)
 
     ctk.CTkLabel(frame_carrinho, text="Carrinho de Compras", font=("Arial", 16, "bold")).pack(pady=(0, 10))
